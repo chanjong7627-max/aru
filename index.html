@@ -104,6 +104,7 @@
             opacity: 1;
         }
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -111,7 +112,7 @@
         <div id="main-header" class="absolute top-0 w-full px-8 py-10 flex justify-between items-center z-50">
             <span class="font-bold tracking-tighter text-lg">ARU.</span>
             <div class="w-8 h-8 rounded-full bg-gray-100 border border-white shadow-sm overflow-hidden">
-                <img src="https://i.pravatar.cc/100?u=sh" class="w-full h-full object-cover">
+                <img id="headerAvatarImg" src="https://i.pravatar.cc/100?u=sh" class="w-full h-full object-cover">
             </div>
         </div>
 
@@ -238,26 +239,81 @@
             </div>
         </div>
 
-        <div id="my" class="screen pt-32 px-8">
-            <div class="flex items-center gap-6 mb-12">
-                <div class="w-16 h-16 rounded-full border-2 border-white shadow-md overflow-hidden"><img src="https://i.pravatar.cc/100?u=sh" class="w-full h-full object-cover"></div>
-                <div><h2 class="text-xl font-bold">김성호</h2><p class="text-xs text-gray-400 mt-1 uppercase tracking-widest">Hannam Suite</p></div>
-            </div>
-            <div class="space-y-1">
-                <div class="flex justify-between py-5 border-b border-gray-50 text-sm" onclick="toggleLang(this)">
-                    <span class="font-medium">언어 설정 (Language)</span>
-                    <span class="text-xs font-bold text-gray-400">한국어</span>
-                </div>
-                <div class="flex justify-between py-5 border-b border-gray-50 text-sm">
-                    <span class="font-medium">푸시 알림</span>
-                    <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-                </div>
-                <div class="flex justify-between py-5 border-b border-gray-50 text-sm">
-                    <span class="font-medium">프라이버시 설정</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-200"></i>
+        <div id="my" class="screen pt-20">
+            <div class="settings-header mb-4">
+                <div class="profile-card">
+                    <div class="avatar" id="avatarWrap">
+                        <img id="avatarImg" src="" alt="avatar">
+                        <div id="avatarPlaceholder" class="avatar-placeholder"><i class="fa-solid fa-user"></i></div>
+                        <input id="avatarInput" type="file" accept="image/*" style="display:none">
+                    </div>
+                    <div class="profile-info">
+                        <h2 class="name">김성호</h2>
+                        <p class="sub">Hannam Suite · 402</p>
+                    </div>
+                    <button id="editProfileBtn" class="btn-ghost">수정</button>
                 </div>
             </div>
-            <p class="text-[9px] text-gray-300 text-center mt-24 tracking-[0.3em] uppercase underline decoration-gray-100 underline-offset-8">Aru Signature v6.0</p>
+
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <div class="card-section">
+                        <div class="section-title">객실 제어</div>
+                        <div class="setting-row" data-search="lighting">
+                            <div class="setting-left">
+                                <div class="setting-title">조명 장면</div>
+                                <div class="setting-desc">분위기에 맞는 조명 설정</div>
+                            </div>
+                            <div class="control">
+                                <div class="segmented" data-key="lighting">
+                                    <button data-value="relax">Relax</button>
+                                    <button data-value="reading" class="active">Reading</button>
+                                    <button data-value="focus">Focus</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-row" data-search="temperature">
+                            <div class="setting-left">
+                                <div class="setting-title">온도</div>
+                                <div class="setting-desc">실내 온도 조절 (°C)</div>
+                            </div>
+                            <div class="control">
+                                <input type="range" min="18" max="28" value="22" id="temperatureRange">
+                                <span id="tempValue" class="range-value">22°C</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-row" data-search="blinds">
+                            <div class="setting-left">
+                                <div class="setting-title">블라인드</div>
+                                <div class="setting-desc">채광 조절</div>
+                            </div>
+                            <div class="control">
+                                <input type="range" min="0" max="100" value="50" id="blindsRange">
+                                <span id="blindsValue" class="range-value">50%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-section">
+                        <div class="section-title">계정 & 기타</div>
+                        <div class="setting-row" data-search="checkout">
+                            <div class="setting-left">
+                                <div class="setting-title">체크아웃 시간</div>
+                                <div class="setting-desc">기본: 11:00</div>
+                            </div>
+                            <div class="control"><i class="fa-solid fa-chevron-right"></i></div>
+                        </div>
+                        <div class="mt-4 flex gap-3">
+                            <button id="saveSettings" class="btn-primary btn-small">저장</button>
+                            <button id="resetSettings" class="btn-ghost btn-small">기본값 복원</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <nav class="nav-bar">
@@ -393,5 +449,6 @@
 
         updateSlide();
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
