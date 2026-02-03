@@ -30,8 +30,23 @@
         .nav-item i { font-size: 18px; }
         .nav-item span { font-size: 8px; font-weight: 700; letter-spacing: 0.1em; }
 
-        /* [HOME] Premium Card */
-        .premium-card { background: linear-gradient(135deg, #222, #000); border-radius: 36px; padding: 35px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        /* [HOME] Premium Card - physical card proportions and tighter side gutters */
+        .screen { padding-left: 12px; padding-right: 12px; }
+        .premium-card { 
+            background: linear-gradient(135deg, #222, #000); 
+            border-radius: 18px; 
+            padding: 22px 20px; 
+            box-shadow: 0 20px 48px rgba(0,0,0,0.35); 
+            border: 1px solid rgba(255,255,255,0.04); 
+            cursor: pointer; 
+            width: calc(100% + 24px);
+            margin-left: -12px;
+            margin-right: -12px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
         /* [SPACE] v6 Immersive Slide */
         #space { padding: 0; overflow: hidden; background: #000; }
@@ -61,8 +76,33 @@
         .toggle.on::after { left: 22px; }
 
         /* [MODAL] */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; display: none; align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.18); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 100; display: none; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 220ms ease; }
+        .modal.active { display: flex; opacity: 1; pointer-events: auto; }
+
+        /* NFC card animation only (keep original visual design) */
+        .nfc-card {
+            transform: translateY(30px) rotateX(12deg) scale(0.98);
+            opacity: 0;
+            transition: transform 620ms cubic-bezier(.2,.9,.2,1), opacity 360ms ease, box-shadow 620ms;
+            transform-origin: center bottom;
+            will-change: transform, opacity;
+            /* Card-like proportions override for a realistic access card */
+            width: 320px !important;
+            height: 200px !important;
+            border-radius: 14px !important;
+            padding: 18px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            background: linear-gradient(135deg, #0f0f10, #0a0a0a) !important;
+            border: 1px solid rgba(255,255,255,0.06) !important;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.45) !important;
+        }
+
+        .modal.active .nfc-card {
+            transform: translateY(0) rotateX(0) scale(1);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -88,6 +128,20 @@
                 <div class="flex justify-between items-end">
                     <div><p class="text-[8px] opacity-40 mb-1 text-white">UNIT</p><p class="text-3xl font-bold text-white">402</p></div>
                     <span class="text-[8px] font-bold opacity-40 text-white">TAP TO SCAN</span>
+                </div>
+            </div>
+            <div class="w-full mt-4 mb-6">
+                <div onclick="findRouteHome()" class="w-full bg-white rounded-2xl p-4 flex justify-between items-center shadow-sm border border-gray-100 cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center text-white text-xs">
+                            <i class="fa-solid fa-location-arrow"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold">현재 위치에서 경로 찾기</p>
+                            <p class="text-[10px] text-gray-400">Aru Seoul: Hannam</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-200"></i>
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
@@ -137,6 +191,26 @@
                     <div class="flex-1"><p class="text-sm font-bold">Maintenance</p><p class="text-[10px] text-gray-400 italic">Checking...</p></div>
                     <span class="text-[10px] font-bold text-blue-500 uppercase">Activated</span>
                 </div>
+                <div class="care-row">
+                    <div class="care-icon-circle"><i class="fa-solid fa-concierge-bell"></i></div>
+                    <div class="flex-1"><p class="text-sm font-bold">Room Service</p><p class="text-[10px] text-gray-400 italic">Preparing: Caesar Salad</p></div>
+                    <span class="text-[10px] font-bold text-gray-500">ETA 18m</span>
+                </div>
+                <div class="care-row">
+                    <div class="care-icon-circle"><i class="fa-solid fa-comments"></i></div>
+                    <div class="flex-1"><p class="text-sm font-bold">Concierge Chat</p><p class="text-[10px] text-gray-400 italic">Online · 답변 보장 5분</p></div>
+                    <span class="text-[10px] font-bold text-green-500">Live</span>
+                </div>
+                <div class="care-row">
+                    <div class="care-icon-circle"><i class="fa-solid fa-spa"></i></div>
+                    <div class="flex-1"><p class="text-sm font-bold">Spa Booking</p><p class="text-[10px] text-gray-400 italic">Tomorrow · 14:00</p></div>
+                    <span class="text-[10px] font-bold text-gray-500">Reserved</span>
+                </div>
+                <div class="care-row">
+                    <div class="care-icon-circle"><i class="fa-solid fa-bed"></i></div>
+                    <div class="flex-1"><p class="text-sm font-bold">Do Not Disturb</p><p class="text-[10px] text-gray-400 italic">Until 09:00</p></div>
+                    <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                </div>
             </div>
         </div>
 
@@ -146,10 +220,21 @@
                 <h3 class="text-[10px] font-bold text-blue-500 tracking-[0.2em] uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-share-nodes"></i> Sharing</h3>
                 <div class="feed-item"><p class="text-[13px] font-bold">프릳츠 커피 원두 나눔합니다</p><p class="text-[11px] text-gray-400 mt-1">402호 성호입니다. 보관함 확인해주세요!</p></div>
                 <div class="feed-item"><p class="text-[13px] font-bold">이케아 독서등 필요하신 분?</p><p class="text-[11px] text-gray-400 mt-1">라운지 무료 나눔함에 넣어둘게요.</p></div>
+                <div class="feed-item"><p class="text-[13px] font-bold">양말 세탁기 무료 이용 나눔</p><p class="text-[11px] text-gray-400 mt-1">사용 안한 세탁기 슬롯을 드립니다. 301호</p></div>
+                <div class="feed-item"><p class="text-[13px] font-bold">이웃과 함께 영화관람</p><p class="text-[11px] text-gray-400 mt-1">라운지 스크린에서 토요일 밤 8시</p></div>
             </div>
             <div class="club-section">
                 <h3 class="text-[10px] font-bold text-orange-500 tracking-[0.2em] uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-person-running"></i> Activity</h3>
                 <div class="feed-item"><p class="text-[13px] font-bold">내일 아침 반포 한강 러닝 6km</p><p class="text-[11px] text-gray-400 mt-1">오전 7시 정문 앞에서 만나요!</p></div>
+                <div class="feed-item"><p class="text-[13px] font-bold">와인 테이스팅 이벤트</p><p class="text-[11px] text-gray-400 mt-1">금요일 저녁 라운지 · 예약 필수</p></div>
+                <div class="feed-item"><p class="text-[13px] font-bold">키즈 클럽: 주말 공예 클래스</p><p class="text-[11px] text-gray-400 mt-1">토·일 오전 10시, 어린이 대상</p></div>
+            </div>
+            <div class="club-section">
+                <h3 class="text-[10px] font-bold text-gray-700 tracking-[0.2em] uppercase mb-4 flex items-center gap-2"><i class="fa-solid fa-hotel"></i> Hotel Features</h3>
+                <div class="feed-item"><p class="text-[13px] font-bold">Gym Hours</p><p class="text-[11px] text-gray-400 mt-1">06:00 — 22:00 · Personal trainer 예약 가능</p></div>
+                <div class="feed-item"><p class="text-[13px] font-bold">Pool Status</p><p class="text-[11px] text-gray-400 mt-1">Heated · 현재 이용 가능</p></div>
+                <div class="feed-item"><p class="text-[13px] font-bold">Breakfast</p><p class="text-[11px] text-gray-400 mt-1">조식 뷔페 07:00 — 10:30 (Lounge)</p></div>
+                <div class="feed-item"><p class="text-[13px] font-bold">Parking</p><p class="text-[11px] text-gray-400 mt-1">Valet 가능 · 요금 정책: 1일 10,000원</p></div>
             </div>
         </div>
 
@@ -185,7 +270,7 @@
     </div>
 
     <div id="nfcModal" class="modal" onclick="toggleNFC(false)">
-        <div class="w-64 h-96 bg-black rounded-3xl border border-white/10 p-10 flex flex-col justify-between shadow-2xl">
+        <div class="w-64 h-96 bg-black rounded-3xl border border-white/10 p-10 flex flex-col justify-between shadow-2xl nfc-card">
             <div class="flex justify-between items-start"><span class="text-[8px] text-white/30 tracking-[0.3em] uppercase">Signature Key</span><i class="fa-solid fa-fingerprint text-white/20 text-xl"></i></div>
             <div class="text-center"><i class="fa-solid fa-nfc-symbol text-white/5 text-7xl animate-pulse"></i></div>
             <div class="border-t border-white/5 pt-8 text-white"><p class="text-[7px] text-white/20 mb-1">UNIT</p><p class="text-2xl font-bold tracking-tighter">402</p></div>
@@ -204,22 +289,53 @@
         let currentSlide = 0;
         let slideInterval;
 
-        function updateSlide() {
+        // Sequential slide controller: fills indicators from 0 → n one-by-one
+        let slideTimer = null;
+        function setSlideIndex(idx) {
             const bg = document.getElementById('bg-slide');
             const title = document.getElementById('space-title');
             const desc = document.getElementById('space-desc');
             const indicators = document.querySelectorAll('.indicator-bar');
 
-            bg.style.backgroundImage = `url('${spaces[currentSlide].img}')`;
-            title.innerText = spaces[currentSlide].title;
-            desc.innerText = spaces[currentSlide].desc;
+            // Update visuals
+            bg.style.backgroundImage = `url('${spaces[idx].img}')`;
+            title.innerText = spaces[idx].title;
+            desc.innerText = spaces[idx].desc;
 
-            indicators.forEach((bar, idx) => {
+            // Reset all indicators to empty, mark viewed only for those before idx
+            indicators.forEach((bar, i) => {
                 bar.classList.remove('active', 'viewed');
-                if (idx < currentSlide) bar.classList.add('viewed');
-                if (idx === currentSlide) bar.classList.add('active');
+                if (i < idx) bar.classList.add('viewed');
             });
+
+            // Trigger current indicator fill
+            if (indicators[idx]) {
+                // small timeout to ensure CSS reset applied
+                setTimeout(() => indicators[idx].classList.add('active'), 30);
+            }
+        }
+
+        function advanceSlideSequence() {
+            const indicators = document.querySelectorAll('.indicator-bar');
+            // mark current as viewed (stop active)
+            if (indicators[currentSlide]) {
+                indicators[currentSlide].classList.remove('active');
+                indicators[currentSlide].classList.add('viewed');
+            }
             currentSlide = (currentSlide + 1) % spaces.length;
+            setSlideIndex(currentSlide);
+            slideTimer = setTimeout(advanceSlideSequence, 4000);
+        }
+
+        function startSlideSequence() {
+            stopSlideSequence();
+            currentSlide = 0;
+            setSlideIndex(currentSlide);
+            slideTimer = setTimeout(advanceSlideSequence, 4000);
+        }
+
+        function stopSlideSequence() {
+            if (slideTimer) { clearTimeout(slideTimer); slideTimer = null; }
         }
 
         function showScreen(screenId, element) {
@@ -231,25 +347,48 @@
             const header = document.getElementById('main-header');
             if (screenId === 'space') {
                 header.classList.add('hidden');
-                currentSlide = 0;
-                updateSlide();
-                clearInterval(slideInterval);
-                slideInterval = setInterval(updateSlide, 4000);
+                // start sequence from 0
+                startSlideSequence();
             } else {
                 header.classList.remove('hidden');
-                clearInterval(slideInterval);
+                stopSlideSequence();
             }
         }
 
         function toggleNFC(show) {
             const modal = document.getElementById('nfcModal');
-            if(show) { modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
-            else { modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 600); }
+            if(show) { modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 60); }
+            else { modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 700); }
         }
 
         function toggleLang(el) {
             const span = el.querySelector('span:last-child');
             span.innerText = span.innerText === '한국어' ? 'English' : '한국어';
+        }
+
+        function findRouteHome() {
+            const stored = localStorage.getItem('aru_home_address');
+            let home = stored || '';
+            if (!home) {
+                home = prompt('집 주소를 입력하세요 (예: 서울시 용산구 한남동 402):');
+                if (!home) return;
+                localStorage.setItem('aru_home_address', home);
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    const url = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lng}&destination=${encodeURIComponent(home)}&travelmode=driving`;
+                    window.open(url, '_blank');
+                }, err => {
+                    const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(home)}&travelmode=driving`;
+                    window.open(url, '_blank');
+                }, { timeout: 5000 });
+            } else {
+                const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(home)}&travelmode=driving`;
+                window.open(url, '_blank');
+            }
         }
 
         updateSlide();
